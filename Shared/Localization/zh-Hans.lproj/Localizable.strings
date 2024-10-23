@@ -362,3 +362,5 @@
 "%lld_PLUS_MORE" = "+%lld 更多";
 "DELETE_DOWNLOAD_AFTER_READING" = "阅读后删除下载";
 "SKIPPING_CHAPTERS" = "跳过 %i 章，可能是来源缺失或已被过滤掉";
+"SCANLATOR" = "扫描器";
+"NO_SCANLATOR" = "无扫描器";

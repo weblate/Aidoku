@@ -339,3 +339,5 @@
 "MAL_LOGIN_NEEDED" = "MyAnimeList लगइन आवश्यक छ";
 "MAL_LOGIN_NEEDED_TEXT" = "तपाइँको MyAnimeList टोकनको म्याद सकिएको छ, त्यसैले तपाइँ सेटिङ्समा पुन: लगइन नगरेसम्म MyAnimeList ट्र्याकरले काम गर्न छोड्नेछ।";
 "BACKUP_ERROR" = "ब्याकअप रिस्टोर त्रुटि";
+"NO_SCANLATOR" = "कुनै स्क्यानलेटर हैन";
+"SCANLATOR" = "सक्यानलेटर";
