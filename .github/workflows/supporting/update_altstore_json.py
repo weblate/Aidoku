@@ -33,14 +33,25 @@ def fetch_latest_release(repo):
         print(f"Error fetching releases: {e}")
         raise
 
-def remove_tags_and_characters(text):
-    text = re.sub('<[^<]+?>', '', text)
-    text = re.sub(r'#{1,6}\s?', '', text)
-    text = re.sub(r'\*{2}', '', text)
-    text = re.sub(r'-', '•', text)
-    text = re.sub(r'`', '"', text)
-    text = re.sub(r'\r\n', '\n', text)
-    return text
+def markdown_to_plain_text(text):
+    # AltStore renders localizedDescription as plain text, so convert the
+    # GitHub release markdown into something readable without markup.
+    text = text.replace('\r\n', '\n')
+    # Links: keep the label and the destination, dropping any <> around the URL.
+    text = re.sub(r'\[([^\]]+)\]\(<?([^)>\s]+)>?\)', r'\1 (\2)', text)
+    # Bare autolinks written as <https://...>.
+    text = re.sub(r'<(https?://[^>\s]+)>', r'\1', text)
+    text = re.sub(r'<[^<>]+?>', '', text)
+    # Heading and list markers only count at the start of a line.
+    text = re.sub(r'^\s{0,3}#{1,6}\s+', '', text, flags=re.MULTILINE)
+    text = re.sub(r'^(\s*)[-*+]\s+', r'\1• ', text, flags=re.MULTILINE)
+    # Emphasis, strikethrough, and inline code.
+    text = re.sub(r'(\*\*|__)(.+?)\1', r'\2', text)
+    text = re.sub(r'(?<!\w)[*_](\S(?:.*?\S)?)[*_](?!\w)', r'\1', text)
+    text = re.sub(r'~~(.+?)~~', r'\1', text)
+    text = text.replace('`', '"')
+    text = re.sub(r'\n{3,}', '\n\n', text)
+    return text.strip()
 
 def get_ipa_version_and_build(ipa_path):
     with zipfile.ZipFile(ipa_path, 'r') as ipa:
@@ -122,7 +133,7 @@ def update_json_file(json_file, repo):
         if keypharse in description:
             description = description.split(keypharse, 1)[1].strip()
 
-        description = remove_tags_and_characters(description)
+        description = markdown_to_plain_text(description)
 
         download_url = asset_to_use["browser_download_url"]
         size = asset_to_use["size"]
